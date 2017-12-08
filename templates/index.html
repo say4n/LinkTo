@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+    {% include 'head.html' %}
+
+    <body>
+
+        <!-- Nav -->
+        <header>
+            <nav class="nav-extended blue darken-2">
+                <div class="nav-wrapper container">
+                    <a href="/" itemprop="url" class="brand-logo site-logo"><i class="material-icons right">share</i>link.to</a>
+                    <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+                    <ul class="right hide-on-med-and-down">
+                        <li><a href="#" class="site-nav__link">
+                            <i class="material-icons right">info</i>
+                        </a></li>
+                    </ul>
+                    <ul class="side-nav" id="nav-mobile">
+                        <li><a href="#" class="site-nav__link">
+                            <i class="material-icons right">info</i>About
+                        </a></li>
+                    </ul>
+                </div>
+
+  
+                <div class="nav-content center blue darken-1">
+                    <!-- Navabr extended -->
+                    <div class="row">
+                        <div class="col s12 m8">
+                            <!-- Form -->
+                            </br>
+                            </br>
+                            </br>
+                            </br>
+                            <div class="row">
+                                <form class="col s12" action="/" method="post">
+                                    <div class="input-field col s10 m8">
+                                        <input id="url_field" placeholder="Paste a link to shorten it" name="url" type="url" class="validate black-text">
+                                    </div>
+                                    <div id="btn" class="input-field col s6 m4">
+                                        <button class="btn waves-effect waves-dark grey lighten-5 blue-text" type="submit" name="action">Submit
+                                            <!-- <i class="material-icons left">send</i> -->
+                                        </button>
+                                    </div>
+                                </form> 
+                            </div>
+                        </div>
+
+                        <div class="col s12 m4">
+                            <!-- Description -->
+                            </br>
+                            <div class="row">
+                                <h4>Shorten URLs ASAP</h4>
+                            </div>
+                            <div class="row">
+                                <p class="flow-text">One-up your linking game.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+
+        <!-- Content -->
+        <main>
+            <div class="container">
+                <!-- Call to Action -->
+                <div class="row">
+                    <div class="col s4 center">
+                        <h4>Shorten</h4>
+                        <p class="flow-text">Shorten long URLs to easily share and manage them.</p>
+                    </div>
+                    <div class="col s4 center">
+                        <h4>Track</h4>
+                        <p class="flow-text">Keep track of your shared URLs</p>
+                    </div>
+                    <div class="col s4 center">
+                        <h4>Gain Insights</h4>
+                        <p class="flow-text">View analytics information on your links and gain insights.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+
+        {% include 'footer.html' %}
+
+        
+        <!--Import jQuery before materialize.js-->
+        <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    </body>
+</html>

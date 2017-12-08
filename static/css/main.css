@@ -1,0 +1,42 @@
+/* background color */
+#url_field {
+  background-color: #fafafa;
+  border-radius: 4px;
+  margin-right: 20px;
+  padding: 0 16px;
+}
+/* underline focus color */
+#url_field:focus {
+ border-bottom: 0px solid #000;
+ box-shadow: 0 0px 0 0 #000;
+}
+/* valid color */
+#url_field.valid {
+ border-bottom: 0px solid #000;
+ box-shadow: 0 0px 0 0 #000;
+}
+/* invalid color */
+#url_field.invalid {
+ border-bottom: 0px solid #000;
+ box-shadow: 0 0px 0 0 #000;
+}
+/* icon prefix focus color */
+.input-field .prefix.active {
+ color: #000;
+}
+
+/* btn hack */
+#btn {
+  margin-top: 4px;
+}
+
+/* sticky footer */
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}

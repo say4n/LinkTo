@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+    
+    {% include 'head.html' %}
+
+    <body>
+
+        <!-- Nav -->
+        <header>
+            <nav class="nav blue darken-2">
+                <div class="nav-wrapper container">
+                    <a href="/" itemprop="url" class="brand-logo site-logo"><i class="material-icons right">share</i>link.to</a>
+                    <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+                    <ul class="right hide-on-med-and-down">
+                        <li><a href="#" class="site-nav__link">
+                            <i class="material-icons right">info</i>
+                        </a></li>
+                    </ul>
+                    <ul class="side-nav" id="nav-mobile">
+                        <li><a href="#" class="site-nav__link">
+                            <i class="material-icons right">info</i>About
+                        </a></li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+
+
+
+        <!-- Content -->
+        <main>
+            <div class="container">
+                <!-- Stats -->
+                <div class="card horizontal">
+                    <div class="card-stacked">
+                        <div class="card-content">
+                            <span class="card-title grey-text text-darken-4">
+                                Analytics for <a href="/{{ short_link }}">link.to/{{ short_link }}</a>
+                                <!-- <i class="material-icons right">more_vert</i> -->
+                            </span>
+                            
+                            <div>
+                                <span class="grey-text" id="date_string">&nbsp;</span>
+                                <span class="badge">Total clicks: {{ clicks|length }}</span>
+                            </div>
+                            
+                            <p>Original URL: <a href="{{ full_link }}">{{ full_link }}</a></p>
+
+                            <div class="chart-container">
+                                <canvas id="traffic_chart"></canvas>
+                            </div>
+
+                            <div class="row">
+                                <div class="col s6 chart-container">
+                                    <canvas id="referrer_chart"></canvas>
+                                </div>
+                                <div class="col s6 chart-container">
+                                    <canvas id="ua_chart"></canvas>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="card-action">
+                            <a href="/stats/{{ short_link }}" class="blue-text">Share Stats</a>
+                            <a href="#" class="blue-text">Report Link</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+
+        {% include 'footer.html' %}
+
+
+        <!--Import jQuery before materialize.js-->
+        <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/moment.min.js') }}"></script>
+        <script type="text/javascript">
+            // time stamp 
+            var timestamp = moment.unix({{ creation_time }});
+            var utcOffset = moment().utcOffset();
+            var local_time = timestamp.add(utcOffset, "minutes");
+            var dateString = local_time.fromNow();
+            // console.log(dateString);
+            document.getElementById("date_string").textContent = "Created " + dateString;
+        </script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+        
+        <script type="text/javascript">
+            // traffic plot
+            var data = [
+                {% for ts in daily_visits %}
+                {
+                    t: moment.utc({{ ts*1000 }}),
+                    y: {{ daily_visits[ts] }}
+                },
+                {% endfor %}
+            ];
+
+            // container
+            var tctx = document.getElementById("traffic_chart").getContext('2d');
+
+            var trafficChart = new Chart(tctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        data: data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.4)',
+                        borderColor: 'rgba(54, 162, 235, 0.6)',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            type: 'time',
+                            time: {
+                                unit: 'month'
+                            }
+                        }],
+                        yAxes: [{
+                                    display: true,
+                                    ticks: {
+                                        beginAtZero: true,
+                                        stepSize: 1
+                                    }
+                        }]
+                    },
+                    title: {
+                        display: true,
+                        text: 'Traffic',
+                        fontSize: 20
+                    },
+                    elements: {
+                        line: {
+                            tension: 0, // disables bezier curves
+                        }
+                    },
+                    tooltips: {
+                        callbacks: {
+                            title: function(tooltipItem, data) {
+                                date = tooltipItem[0]
+                                        .xLabel
+                                        .format('MMMM Do YYYY h:mm a');
+                                return date + " UTC";
+                            },
+                            label: function(tooltipItem, data) {
+                                clicks = tooltipItem.yLabel;
+                                return `Clicks: ${clicks}`;
+                            }
+                        }
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            });
+        </script>
+
+        <script type="text/javascript">
+            // referrer plot
+            var pie = [];
+            var label = [];
+            {% for ref in referrers %}
+            label.push("{{ ref }}");
+            pie.push("{{ referrers[ref] }}");
+            {% endfor %}
+
+            // container
+            var rctx = document.getElementById("referrer_chart").getContext('2d');
+
+            var refChart = new Chart(rctx, {
+                type: 'doughnut',
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Referrers',
+                        fontSize: 20
+                    },
+                },
+                data: {
+                    labels: label,
+                    datasets: [{
+                        data: pie,
+                        backgroundColor: [
+                            "rgb(54, 162, 235)",
+                            "rgb(255, 99, 132)",
+                            "rgb(255, 205, 86)",
+                            "rgb(54, 162, 235)",
+                            "rgb(255, 99, 132)",
+                            "rgb(255, 205, 86)"
+                        ]
+                    }]
+                }
+            });
+
+        </script>
+
+        <script type="text/javascript">
+            // referrer plot
+            var pie = [];
+            var label = [];
+            {% for ua in user_agents %}
+            label.push("{{ ua }}");
+            pie.push("{{ user_agents[ua] }}");
+            {% endfor %}
+
+            // container
+            var rctx = document.getElementById("ua_chart").getContext('2d');
+
+            var refChart = new Chart(rctx, {
+                type: 'doughnut',
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Browsers',
+                        fontSize: 20
+                    },
+                },
+                data: {
+                    labels: label,
+                    datasets: [{
+                        data: pie,
+                        backgroundColor: [
+                            "rgb(255, 99, 132)",
+                            "rgb(54, 162, 235)",
+                            "rgb(255, 205, 86)",
+                            "rgb(180, 162, 235)",
+                        ]
+                    }]
+                }
+            });
+
+        </script>
+    </body>
+</html>
