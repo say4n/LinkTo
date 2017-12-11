@@ -16,7 +16,7 @@ BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 @app.route("/", methods=["GET", "POST"])
 def index():
     """Main view
-    Handles submission via POST
+    Handles form submission via POST
     """
     if request.method == "POST":
         url = request.form.get("url")
