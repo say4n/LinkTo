@@ -197,7 +197,7 @@ def init():
     DB = redis.StrictRedis(host='localhost', port=6379, db=0)
 
     if not DB.exists("max_id"):
-        DB.set("max_id", "100000")
+        DB.set("max_id", "411757")
 
 
 def utc_now():
@@ -206,8 +206,9 @@ def utc_now():
     now = datetime.datetime.utcnow()
     return int(now.strftime("%s"))
 
+init()
+
 if __name__ == "__main__":
-    init()
     app.run(debug=True)
 
 

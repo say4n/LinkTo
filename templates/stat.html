@@ -40,7 +40,9 @@
                         <div class="card-content">
                             <span class="card-title grey-text text-darken-4">
                                 Analytics for <a href="/{{ short_link }}">link.to/{{ short_link }}</a>
-                                <!-- <i class="material-icons right">more_vert</i> -->
+                                <a href="#!copy" class="copy_button" data-clipboard-text="/stats/{{ short_link }}">
+                                    <i id="copy_link" class="material-icons right">content_copy</i>
+                                </a>
                             </span>
                             
                             <div>
@@ -107,14 +109,22 @@
         <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/moment.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/clipboard.min.js') }}"></script>
         <script type="text/javascript">
             // time stamp 
             var timestamp = moment.unix({{ creation_time }});
             var utcOffset = moment().utcOffset();
             var local_time = timestamp.add(utcOffset, "minutes");
             var dateString = local_time.fromNow();
-            // console.log(dateString);
             document.getElementById("date_string").textContent = "Created " + dateString;
+
+            // copy link to clipboard
+            var clipboard = new Clipboard('.copy_button');
+
+            clipboard.on('success', function(e) {
+                Materialize.toast('Copied to Clipboard', 4000, 'rounded');
+            });
+
         </script>
         
         {% if clicks|length > 0 %}
