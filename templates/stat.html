@@ -2,6 +2,9 @@
 <html>
     
     {% include 'head.html' %}
+    {% if clicks|length == 0 %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/breathe.css') }}?v=beta">
+    {% endif %}
 
     <body>
 
@@ -47,6 +50,26 @@
                             
                             <p>Original URL: <a href="{{ full_link }}">{{ full_link }}</a></p>
 
+                            {% if clicks|length == 0 %}
+                            
+                            <div>
+                                <p class="flow-text">Uh Oh, there seems to be no activity!<p>
+                                <p class="flow-text">Breathe in, breathe out ...</p>
+
+                                <div class="breath-container">
+                                    <div class="breathe">
+                                        <div class="circle"></div>
+                                        <div class="circle"></div>
+                                        <div class="circle"></div>
+                                        <div class="circle"></div>
+                                        <div class="circle"></div>
+                                        <div class="circle"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% else %}
+
                             <div class="row">
                                 <div class="col s12 chart-container">
                                     <canvas id="traffic_chart" class="container"></canvas>
@@ -61,6 +84,8 @@
                                     <canvas id="ua_chart"></canvas>
                                 </div>
                             </div>
+
+                            {% endif %}
 
                         </div>
 
@@ -91,8 +116,9 @@
             // console.log(dateString);
             document.getElementById("date_string").textContent = "Created " + dateString;
         </script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
         
+        {% if clicks|length > 0 %}
+        <script type="text/javascript" src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
         <script type="text/javascript">
             // traffic plot
             var data = [
@@ -248,5 +274,6 @@
             });
 
         </script>
+        {% endif %}
     </body>
 </html>
