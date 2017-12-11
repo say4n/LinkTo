@@ -47,15 +47,17 @@
                             
                             <p>Original URL: <a href="{{ full_link }}">{{ full_link }}</a></p>
 
-                            <div class="chart-container">
-                                <canvas id="traffic_chart"></canvas>
+                            <div class="row">
+                                <div class="col s12 chart-container">
+                                    <canvas id="traffic_chart" class="container"></canvas>
+                                </div>
                             </div>
 
                             <div class="row">
-                                <div class="col s6 chart-container">
+                                <div class="col s12 m6 chart-container" style="min-height: 200px">
                                     <canvas id="referrer_chart"></canvas>
                                 </div>
-                                <div class="col s6 chart-container">
+                                <div class="col s12 m6 chart-container" style="min-height: 200px">
                                     <canvas id="ua_chart"></canvas>
                                 </div>
                             </div>
@@ -116,6 +118,8 @@
                     }]
                 },
                 options: {
+                    responsive : true,
+                    maintainAspectRatio: false,
                     scales: {
                         xAxes: [{
                             display: true,
@@ -162,18 +166,18 @@
                     },
                     legend: {
                         display: false
-                    }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: true
                 }
             });
-        </script>
-
-        <script type="text/javascript">
+        
             // referrer plot
-            var pie = [];
-            var label = [];
+            var rpie = [];
+            var rlabel = [];
             {% for ref in referrers %}
-            label.push("{{ ref }}");
-            pie.push("{{ referrers[ref] }}");
+            rlabel.push("{{ ref }}");
+            rpie.push("{{ referrers[ref] }}");
             {% endfor %}
 
             // container
@@ -187,11 +191,13 @@
                         text: 'Referrers',
                         fontSize: 20
                     },
+                    responsive: true,
+                    maintainAspectRatio: false
                 },
                 data: {
-                    labels: label,
+                    labels: rlabel,
                     datasets: [{
-                        data: pie,
+                        data: rpie,
                         backgroundColor: [
                             "rgb(54, 162, 235)",
                             "rgb(255, 99, 132)",
@@ -204,21 +210,19 @@
                 }
             });
 
-        </script>
 
-        <script type="text/javascript">
-            // referrer plot
-            var pie = [];
-            var label = [];
+            // ua plot
+            var upie = [];
+            var ulabel = [];
             {% for ua in user_agents %}
-            label.push("{{ ua }}");
-            pie.push("{{ user_agents[ua] }}");
+            ulabel.push("{{ ua }}");
+            upie.push("{{ user_agents[ua] }}");
             {% endfor %}
 
             // container
-            var rctx = document.getElementById("ua_chart").getContext('2d');
+            var uctx = document.getElementById("ua_chart").getContext('2d');
 
-            var refChart = new Chart(rctx, {
+            var refChart = new Chart(uctx, {
                 type: 'doughnut',
                 options: {
                     title: {
@@ -226,11 +230,13 @@
                         text: 'Browsers',
                         fontSize: 20
                     },
+                    responsive: true,
+                    maintainAspectRatio: false
                 },
                 data: {
-                    labels: label,
+                    labels: ulabel,
                     datasets: [{
-                        data: pie,
+                        data: upie,
                         backgroundColor: [
                             "rgb(255, 99, 132)",
                             "rgb(54, 162, 235)",

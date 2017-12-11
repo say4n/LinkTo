@@ -40,3 +40,10 @@ body {
 main {
     flex: 1 0 auto;
 }
+
+/* fix weird chartjs resize bug */
+canvas {
+    width: 100% !important;
+    max-width: 800px;
+    height: auto !important;
+}
