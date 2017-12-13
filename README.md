@@ -1,6 +1,7 @@
 # link.to
 URL Shortener using Flask and Redis
 
+![LinkTo Link Shortener](screenshots/showcase.png)
 
 
 ---
