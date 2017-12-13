@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    
+    {% include 'head.html' %}
+
+    <body>
+
+        <!-- Nav -->
+        <header>
+            <nav class="nav blue darken-2">
+                <div class="nav-wrapper container">
+                    <a href="/" itemprop="url" class="brand-logo site-logo"><i class="material-icons right">share</i>link.to</a>
+                    <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+                    <ul class="right hide-on-med-and-down">
+                        <li><a href="#" class="site-nav__link">
+                            <i class="material-icons right">info</i>
+                        </a></li>
+                    </ul>
+                    <ul class="side-nav" id="nav-mobile">
+                        <li><a href="#" class="site-nav__link">
+                            <i class="material-icons right">info</i>About
+                        </a></li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Content -->
+        <main>
+            <div class="container">
+                <h1>Error 404: Page not found</h1>
+                <p class="flow-text">You broke something!</p>
+            </div>
+        </main>
+
+        {% include 'footer.html' %}
+        
+        <!--Import jQuery before materialize.js-->
+        <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    </body>
+</html>

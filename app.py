@@ -115,6 +115,13 @@ def link_to(uid):
         return redirect(url)
 
 
+@app.errorhandler(404)
+def page_not_found(error):
+    """Error 404: Page not found
+    """
+    return render_template('page_not_found.html'), 404
+
+
 def encode(num, alphabet=BASE62):
     """Encode a positive number in Base X
 
