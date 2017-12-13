@@ -5,6 +5,7 @@ from collections import Counter
 from flask import Flask, request, render_template, redirect, abort
 import json
 import redis
+from redis import WatchError
 from urllib.parse import urlparse
 
 # globals
@@ -22,20 +23,7 @@ def index():
         url = request.form.get("url")
 
         if urlparse(url).scheme in ["http", "https"]:
-            _id = int(DB.get("max_id")) + 1
-            
-            hashed_id = encode(_id) + checksum(_id, 2, 62)
-            timestamp = utc_now()
-            entry = {
-                "url": url,
-                "traffic": [],
-                "time": timestamp
-            }
-            serialised_entry = json.dumps(entry)
-
-            DB.set(hashed_id, serialised_entry)
-            DB.incr("max_id", amount=1)
-
+            hashed_id = add_new_link(url)
             return redirect('/stats/' + hashed_id)
         else: 
             abort(400)
@@ -181,7 +169,12 @@ def sanitize_referers(url):
 
 
 def checksum(num, length, modulus):
-    """Given a number, number of digits and a modulus, return checksum
+    """Returns base `modulus` checksum of a number `num` of length `length
+
+    Arguments:
+    - `num`: The number to hash
+    - `modulus`: Base to hash in
+    - `length`: Max length of hashed output 
     """
     mod = modulus ** length
     product = 1
@@ -189,6 +182,53 @@ def checksum(num, length, modulus):
         if x != "0":
             product = ((product%mod) * (int(x)%mod))%mod
     return encode(product)
+
+
+def add_new_link(url):
+    """Perform transaction to add new link
+
+    Arguments:
+    - `url`: A valid url
+    """
+    with DB.pipeline() as pipe:
+        while True:
+            hashed_id = None
+            try:
+                # Watch `max_id` for changes
+                pipe.watch("max_id")
+                # after WATCHing, the pipeline is put into immediate execution
+                # mode until we tell it to start buffering commands again.
+                # this allows us to get the current value of our sequence
+
+                # Get current `max_id`
+                current_max_id = DB.get("max_id")
+                next_max_id = int(current_max_id) + 1
+                hashed_id = encode(next_max_id) + checksum(next_max_id, 2, 62)
+                timestamp = utc_now()
+                entry = {
+                    "url": url,
+                    "traffic": [],
+                    "time": timestamp
+                }
+                serialised_entry = json.dumps(entry)
+
+                # now we can put the pipeline back into buffered mode with MULTI
+                pipe.multi()
+                pipe.set("max_id", next_max_id)
+                pipe.set(hashed_id, serialised_entry)
+
+                # and finally, execute the pipeline (the set command)
+                pipe.execute()
+
+                # if a WatchError wasn't raised during execution, everything
+                # we just did happened atomically.
+                return hashed_id
+            except WatchError:
+                # another client must have changed `max_id` between
+                # the time we started WATCHing it and the pipeline's execution.
+                # our best bet is to just retry.
+                continue
+
 
 def init():
     """Initialise redis database
