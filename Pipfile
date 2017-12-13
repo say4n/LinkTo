@@ -14,3 +14,4 @@ numpy = "*"
 
 [dev-packages]
 
+pycodestyle = "*"

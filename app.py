@@ -25,7 +25,7 @@ def index():
         if urlparse(url).scheme in ["http", "https"]:
             hashed_id = add_new_link(url)
             return redirect('/stats/' + hashed_id)
-        else: 
+        else:
             abort(400)
     else:
         return render_template('index.html')
@@ -49,7 +49,8 @@ def statistics(uid):
         clicks = entry["traffic"]
         timestamp = entry["time"]
 
-        hourly_visits = map(lambda ts: (ts//(60*60)) * (60*60), (int(click["timestamp"]) for click in clicks))
+        hourly_visits = map(lambda ts: (ts//(60*60))*(60*60),
+                            (int(click["timestamp"]) for click in clicks))
         hourly_visits = Counter(hourly_visits)
 
         referrers = [sanitize_referers(click["referrer"]) for click in clicks]
@@ -76,11 +77,11 @@ def statistics(uid):
             else:
                 user_agents["Others"] += 1
 
-        return render_template('stat.html', 
-                               short_link=short_link, 
-                               full_link=full_link, 
+        return render_template('stat.html',
+                               short_link=short_link,
+                               full_link=full_link,
                                clicks=clicks,
-                               creation_time=timestamp, 
+                               creation_time=timestamp,
                                daily_visits=hourly_visits,
                                referrers=referrers,
                                user_agents=user_agents)
@@ -98,11 +99,11 @@ def link_to(uid):
     else:
         entry = DB.get(uid)
         entry = json.loads(entry)
-        
+
         url = entry["url"]
-        referrer = request.referrer if request.referrer is not None else "Unknown"
+        referrer = request.referrer or "Unknown"
         visitor = {
-                    "UA": request.headers.get('User-Agent'), 
+                    "UA": request.headers.get('User-Agent'),
                     "timestamp": utc_now(),
                     "referrer": referrer
                     }
@@ -165,7 +166,7 @@ def sanitize_referers(url):
     elif "facebook." in url or "fb." in url:
         return url
     else:
-        return "Unknown" 
+        return "Unknown"
 
 
 def checksum(num, length, modulus):
@@ -174,13 +175,13 @@ def checksum(num, length, modulus):
     Arguments:
     - `num`: The number to hash
     - `modulus`: Base to hash in
-    - `length`: Max length of hashed output 
+    - `length`: Max length of hashed output
     """
     mod = modulus ** length
     product = 1
     for x in str(num):
         if x != "0":
-            product = ((product%mod) * (int(x)%mod))%mod
+            product = ((product % mod) * (int(x) % mod)) % mod
     return encode(product)
 
 
@@ -212,7 +213,7 @@ def add_new_link(url):
                 }
                 serialised_entry = json.dumps(entry)
 
-                # now we can put the pipeline back into buffered mode with MULTI
+                # now we put the pipeline back into buffered mode with MULTI
                 pipe.multi()
                 pipe.set("max_id", next_max_id)
                 pipe.set(hashed_id, serialised_entry)
@@ -246,9 +247,8 @@ def utc_now():
     now = datetime.datetime.utcnow()
     return int(now.strftime("%s"))
 
+
 init()
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
