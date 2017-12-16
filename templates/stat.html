@@ -158,10 +158,10 @@
                     maintainAspectRatio: false,
                     scales: {
                         xAxes: [{
-                            display: true,
                             type: 'time',
-                            time: {
-                                unit: 'month'
+                            ticks: {
+                                autoSkip: true,
+                                maxTicksLimit: 20
                             }
                         }],
                         yAxes: [{
@@ -191,7 +191,7 @@
                             title: function(tooltipItem, data) {
                                 date = tooltipItem[0]
                                         .xLabel
-                                        .format('MMMM Do YYYY h:mm a');
+                                        .format('MMMM Do YYYY');
                                 return date + " UTC";
                             },
                             label: function(tooltipItem, data) {
