@@ -23,4 +23,14 @@ To run LinkTo locally, you will need [Pipenv](https://github.com/pypa/pipenv), P
 ## :zap: Why/How was it built?
 Link.To was built using Flask with Redis in the database layer as a means to explore key-value store type of (NoSQL) databases.
 
+```
+ ___       ___  ________   ___  __                     _________  ________     
+|\  \     |\  \|\   ___  \|\  \|\  \                  |\___   ___\\   __  \    
+\ \  \    \ \  \ \  \\ \  \ \  \/  /|_                \|___ \  \_\ \  \|\  \   
+ \ \  \    \ \  \ \  \\ \  \ \   ___  \                    \ \  \ \ \  \\\  \  
+  \ \  \____\ \  \ \  \\ \  \ \  \\ \  \      ___           \ \  \ \ \  \\\  \ 
+   \ \_______\ \__\ \__\\ \__\ \__\\ \__\    |\__\           \ \__\ \ \_______\
+    \|_______|\|__|\|__| \|__|\|__| \|__|    \|__|            \|__|  \|_______|
+```
+
 <sub><sup><sub>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></sub></sup></sub>
